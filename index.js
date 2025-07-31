@@ -10,7 +10,9 @@ dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-const db = new pg.Client({
+const { Pool } = pg;
+
+const db = new Pool({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_DATABASE,
@@ -20,13 +22,16 @@ const db = new pg.Client({
     rejectUnauthorized: false,
   },
 });
-db.connect()
-.then(() =>{
-  console.log("Connected to database");
-})
-.catch((err) => {
-  console.log(err);
-})
+
+db.on('connect', () => {
+  console.log("Connected to database (via pool)");
+});
+
+db.on('error', (err) => {
+  console.error("Unexpected error on idle client", err);
+  process.exit(-1);
+});
+
 
 app.get("/", async(req, res) => {
   try{
