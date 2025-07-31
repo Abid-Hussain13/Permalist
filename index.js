@@ -32,6 +32,21 @@ db.on('error', (err) => {
   process.exit(-1);
 });
 
+(async () => {
+  try {
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS items (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(120) NOT NULL
+      );
+    `);
+    console.log("✅ Table ensured");
+  } catch (err) {
+    console.error("❌ Failed to create table:", err);
+  }
+})();
+
+
 
 app.get("/", async(req, res) => {
   try{
