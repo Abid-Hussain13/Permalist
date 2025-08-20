@@ -10,8 +10,8 @@ dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+app.set("views", "./views");
 
-// const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -34,7 +34,7 @@ app.get("/", async(req, res) => {
   try{
     const listItems = await pool.query('Select * from items order by id asc;');
     const items = listItems.rows;
-    res.render("index.ejs", {
+    res.render("index", {
       listTitle: "Today",
       listItems: items,
     });
