@@ -2,15 +2,22 @@ import express from "express";
 import bodyParser from "body-parser";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const app = express();
-const port = 3000;
+// const port = 3000;
 dotenv.config();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "public")));
+
+// EJS setup with absolute path
 app.set("view engine", "ejs");
-app.set("views", "./views");
+app.set("views", path.join(__dirname, "views"));
 
 
 const pool = new Pool({
